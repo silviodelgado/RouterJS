@@ -2,6 +2,7 @@
   * RouterJS v1.2.0 (https://wwwinterart.com/)
   * Copyright 2018-2019 Silvio Delgado (https://github.com/silviodelgado)
   * Licensed under MIT (https://opensource.org/licenses/MIT)
+  * https://github.com/silviodelgado/routerjs
   */
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
