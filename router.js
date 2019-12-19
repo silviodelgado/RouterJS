@@ -1,5 +1,5 @@
 /*!
-  * RouterJS v1.2.0 (https://www.interart.com/)
+  * RouterJS v1.2.0 (https://wwwinterart.com/)
   * Copyright 2018-2019 Silvio Delgado (https://github.com/silviodelgado)
   * Licensed under MIT (https://opensource.org/licenses/MIT)
   */
@@ -63,7 +63,7 @@
             return this;
         },
         clearHash: function () {
-            window.location.hash = '#a';
+            window.location.hash = '#';
             history.pushState(null, document.title, window.location.pathname);
         },
         back: function () {
@@ -72,6 +72,9 @@
             path = path || '';
             window.location.hash = path;
             return this;
+        },
+        checkFragment: function (current) {
+            return this.getFragment().indexOf(current) >= 0;
         }
     }
 });
