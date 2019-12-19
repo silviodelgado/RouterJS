@@ -3,7 +3,7 @@
   * Copyright 2018-2019 Silvio Delgado (https://github.com/silviodelgado)
   * Licensed under MIT (https://opensource.org/licenses/MIT)
   */
- (function (root, factory) {
+(function (root, factory) {
     if (typeof define === 'function' && define.amd) {
         define([], factory(root));
     } else if (typeof exports === 'object') {
