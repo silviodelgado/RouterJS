@@ -65,7 +65,7 @@
         },
         clearHash: function () {
             window.location.hash = '#';
-            history.pushState(null, document.title, window.location.pathname);
+            history.pushState(null, document.title, window.location.pathname + window.location.search);
         },
         back: function () {
             this.history.pop();
