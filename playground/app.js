@@ -17,9 +17,14 @@
         alert('Number: ' + num);
     }
 
+    const show_multiple = (num1, num2) => {
+        alert('Number 1: ' + num1 + "\nNumber 2: " + num2);
+    }
+
     Router
         .add(/about/, show_about)
         .add(/number:([0-9]+)/, show_number)
+        .add(/multiple:([0-9]+)\|([0-9]+)/, show_multiple)
         .beforeAll(() => {
             console.log('Run before all routes!')
         })
