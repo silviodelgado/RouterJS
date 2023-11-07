@@ -1,5 +1,5 @@
 /*!
-  * RouterJS v1.3.0 (https://www.interart.com/)
+  * RouterJS v1.4.0 (https://www.interart.com/)
   * Copyright 2018-2023 Silvio Delgado (https://github.com/silviodelgado)
   * Licensed under MIT (https://opensource.org/licenses/MIT)
   * https://github.com/silviodelgado/routerjs
@@ -16,19 +16,30 @@
     'use strict';
 
     let internal = {
+        current: null,
         routes: [],
         history: [],
         run_before: null,
         run_after: null
     };
 
-    const run_before = () => {
+    const run_before = (route) => {
         if (typeof internal.run_before == 'function' && internal.run_before) {
             internal.run_before.call(this);
         }
+        if (route && route.run_before) {
+            if (typeof route.run_before == 'function' && route.run_before) {
+                route.run_before.call(this);
+            }
+        }
     };
 
-    const run_after = () => {
+    const run_after = (route) => {
+        if (route && route.run_after) {
+            if (typeof route.run_after == 'function' && route.run_after) {
+                route.run_after.call(this);
+            }
+        }
         if (typeof internal.run_after == 'function' && internal.run_after) {
             internal.run_after.call(this);
         }
@@ -38,14 +49,16 @@
         getFragment: () => {
             return window.location.hash.replace(/\/$/, '');
         },
-        add: (route, handler) => {
+        add: (route, handler, run_before, run_after) => {
             if (typeof route == 'function') {
                 handler = route;
                 route = '';
             }
             internal.routes.push({
                 handler: handler,
-                route: route
+                route: route,
+                run_before,
+                run_after
             });
             return router;
         },
@@ -59,15 +72,18 @@
         },
         apply: (frg) => {
             let fragment = frg || router.getFragment();
+            if (!fragment || (internal.current == fragment))
+                return router;
+            internal.current = router.getFragment();
             for (let i = 0; i < internal.routes.length; i++) {
                 let matches = fragment.match(internal.routes[i].route);
                 if (matches) {
                     matches.shift();
                     if (!internal.history[fragment])
                         internal.history.push(fragment);
-                    run_before();
+                    run_before(internal.routes[i]);
                     internal.routes[i].handler.apply({}, matches);
-                    run_after();
+                    run_after(internal.routes[i]);
                     return router;
                 }
             }
@@ -80,6 +96,9 @@
                     current = router.getFragment();
                     router.apply(current);
                 }
+            }
+            if (router.getFragment() && !internal.current) {
+                internal.current = router.getFragment();
             }
             return router;
         },
@@ -102,6 +121,9 @@
         },
         checkFragment: (current) => {
             return router.getFragment().indexOf(current) >= 0;
+        },
+        routes: () => {
+            return internal.routes;
         }
     };
 
