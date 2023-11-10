@@ -1,5 +1,5 @@
 /*!
-  * RouterJS v1.4.0 (https://www.interart.com/)
+  * RouterJS v1.5.0 (https://www.interart.com/)
   * Copyright 2018-2023 Silvio Delgado (https://github.com/silviodelgado)
   * Licensed under MIT (https://opensource.org/licenses/MIT)
   * https://github.com/silviodelgado/routerjs
@@ -72,8 +72,6 @@
         },
         apply: (frg) => {
             let fragment = frg || router.getFragment();
-            if (!fragment || (internal.current == fragment))
-                return router;
             internal.current = router.getFragment();
             for (let i = 0; i < internal.routes.length; i++) {
                 let matches = fragment.match(internal.routes[i].route);
@@ -97,8 +95,8 @@
                     router.apply(current);
                 }
             }
-            if (router.getFragment() && !internal.current) {
-                internal.current = router.getFragment();
+            if (current && !internal.current) {
+                apply();
             }
             return router;
         },
