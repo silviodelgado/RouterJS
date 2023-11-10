@@ -72,11 +72,12 @@
         },
         apply: (frg) => {
             let fragment = frg || router.getFragment();
-            internal.current = router.getFragment();
+            if (internal.current) return router;
             for (let i = 0; i < internal.routes.length; i++) {
                 let matches = fragment.match(internal.routes[i].route);
                 if (matches) {
                     matches.shift();
+                    internal.current = fragment;
                     if (!internal.history[fragment])
                         internal.history.push(fragment);
                     run_before(internal.routes[i]);
@@ -90,13 +91,18 @@
         start: () => {
             let current = router.getFragment();
             window.onhashchange = function () {
-                if (current !== router.getFragment()) {
-                    current = router.getFragment();
-                    router.apply(current);
+                let frg = router.getFragment();
+                if (!frg) {
+                    internal.current = null;
+                    current = null;
+                }
+                if (internal.current != frg) {
+                    internal.current = null;
+                    router.apply(frg);
                 }
             }
             if (current && !internal.current) {
-                apply();
+                router.apply();
             }
             return router;
         },
