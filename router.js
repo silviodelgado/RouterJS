@@ -1,5 +1,5 @@
 /*!
-  * RouterJS v1.5.0 (https://www.interart.com/)
+  * RouterJS v1.6.0 (https://www.interart.com/)
   * Copyright 2018-2023 Silvio Delgado (https://github.com/silviodelgado)
   * Licensed under MIT (https://opensource.org/licenses/MIT)
   * https://github.com/silviodelgado/routerjs
@@ -113,8 +113,10 @@
             return router;
         },
         clearHash: () => {
+            let pos = window.scrollY;
             window.location.hash = '#';
             history.pushState(null, document.title, window.location.pathname + window.location.search);
+            window.scrollTo({ top: pos, left: 0, behavior: 'smooth'})
         },
         back: () => {
             internal.history.pop();
