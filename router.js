@@ -1,5 +1,5 @@
 /*!
-  * RouterJS v1.6.0 (https://www.interart.com/)
+  * RouterJS v1.7.0 (https://www.interart.com/)
   * Copyright 2018-2023 Silvio Delgado (https://github.com/silviodelgado)
   * Licensed under MIT (https://opensource.org/licenses/MIT)
   * https://github.com/silviodelgado/routerjs
@@ -16,6 +16,7 @@
     'use strict';
 
     let internal = {
+        started: false,
         current: null,
         routes: [],
         history: [],
@@ -78,7 +79,7 @@
                 if (matches) {
                     matches.shift();
                     internal.current = fragment;
-                    if (!internal.history[fragment])
+                    if (!internal.history.includes(fragment))
                         internal.history.push(fragment);
                     run_before(internal.routes[i]);
                     internal.routes[i].handler.apply({}, matches);
@@ -89,8 +90,11 @@
             return router;
         },
         start: () => {
+             if (internal.started)
+                return router;
+            internal.started = true;
             let current = router.getFragment();
-            window.onhashchange = function () {
+            window.addEventListener('hashchange', function () {
                 let frg = router.getFragment();
                 if (!frg) {
                     internal.current = null;
@@ -100,7 +104,7 @@
                     internal.current = null;
                     router.apply(frg);
                 }
-            }
+            });
             if (current && !internal.current) {
                 router.apply();
             }
@@ -108,7 +112,7 @@
         },
         navigate: (path, title) => {
             document.title = title || document.title;
-            path = path.replace(/##/g, '#') || '';
+            path = String(path || '').replace(/##/g, '#') || '';
             window.location.hash = path ? '#' + path : '';
             return router;
         },
@@ -129,7 +133,7 @@
             return router.getFragment().indexOf(current) >= 0;
         },
         routes: () => {
-            return internal.routes;
+            return Object.freeze(internal.routes.map(r => Object.freeze({...r})));
         }
     };
 
